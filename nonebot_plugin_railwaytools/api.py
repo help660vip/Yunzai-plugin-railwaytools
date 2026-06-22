@@ -8,6 +8,7 @@ class API:
     api_xiaguanzhan = "http://www.xiaguanzhan.com/soso.asp"
     api_station_screen = "https://apis.uctb.cn/api/12306?"
     api_cnrail_geogv = "http://cnrail.geogv.org/api/"
+    api_cr_locomotive_allocation = "https://cdn.jsdelivr.net/gh/leaf2006/CR-Locomotive-Allocation@main/data/raw_result.json"
     
     headers = { # 加个请求头，保险一点
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"

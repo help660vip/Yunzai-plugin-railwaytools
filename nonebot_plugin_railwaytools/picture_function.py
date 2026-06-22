@@ -52,7 +52,8 @@ async def handle_xiaguanzhan_photo(event:Event, args: Message = CommandArg()): #
                 f"生产厂商：{manufacturer}\n",
                 f"拍摄日期：{shoot_date}\n",
                 f"拍摄作者：{shoot_author}\n\n",
-                "数据来源：下关站-铁路摄影馆",
+                "数据来源：下关站-铁路摄影馆\n\n",
+                "⚠️该功能将在v2.2.8废弃，建议您使用 /机车信息 功能，体验更佳⚠️"
             ])
             await xiaguanzhan_photo.finish(xiaguanzhan_photo_output)
         

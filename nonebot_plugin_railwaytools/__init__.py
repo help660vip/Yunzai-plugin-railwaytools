@@ -13,6 +13,7 @@ from .train_info import handle_train_info
 from .station_screen import handle_station_screen
 from .route_info import handle_route_info
 from .station_info import handle_station_info
+from .locomotive_info import handle_locomotive_info
 
 # 插件配置页
 __plugin_meta__ = PluginMetadata(
@@ -26,6 +27,7 @@ __plugin_meta__ = PluginMetadata(
     /线路 [线路名称] - 查询某条铁路基本信息
     /车站 [车站名称] - 查询某车站基本信息
     /下关站 [机车车号] - 通过车号查看下关站机车户口照
+    /机车信息 [机车车号] - 通过车号查询机车/动车组基本信息
     /help - 查看帮助信息
     """,
 
@@ -53,13 +55,13 @@ async def handle_information_helper():
         "④ 通过车站名称查看车站大屏：/大屏 或 /dp （例如：/大屏 上海）\n \n"
         "⑤ 查询某条铁路基本信息：/线路 或 /xl （例如：/线路 宣杭铁路） \n \n"
         "⑥ 查询某车站基本信息：/车站 或 /cz （例如：/车站 上海） \n \n"
-        "⑦ 通过车号查询下关站机车户口照：/下关站 或 /xgz （例如：/下关站 HXD1D-1898） \n \n",
+        "⑦ 通过车号查询机车/动车组基本信息：/机车信息 或 /jcxx （例如：/机车信息 HXD1D-1898） \n \n",
         "⑧ 帮助：/帮助 或 /help \n \n",
         "更多功能正在开发中，尽情期待！ \n",
         "------------------------------ \n \n",
         "Powered by Nonebot2\n",
         "Copyright © Leaf developer 2023-2026"
 
-    ]) # type: ignore
+    ])
     
     await information_helper.finish(information_Helper_message)
