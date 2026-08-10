@@ -85,10 +85,14 @@ async def handle_train_info(event:Event, args: Message = CommandArg()): # type: 
                     if res_info_EMU.status_code == 404 or not info_EMU_code:
                         jiaolu_train_style = " " # Bug fix：判断rail.re的数据库里有没有这个车次的信息，没有的话就给车型信息赋一个空的值
                     else:
-                        if info_EMU_code[0]['date'] == info_EMU_code[1]['date']: # 判定是否重联
-                            jiaolu_train_style = f"{utils.EMU_code_formatter(info_EMU_code[0]['emu_no'])}与{utils.EMU_code_formatter(info_EMU_code[1]['emu_no'])}重联"
+                        today_compare = datetime.date.today().strftime("%Y-%m-%d")
+                        if info_EMU_code[0]['date'].split(' ')[0] != today_compare: # 如果日期不等于今天，使用默认数据
+                            jiaolu_train_style = stop_time[0]['jiaolu_train_style']
                         else:
-                            jiaolu_train_style = utils.EMU_code_formatter(info_EMU_code[0]['emu_no'])
+                            if info_EMU_code[0]['date'] == info_EMU_code[1]['date']: # 判定是否重联
+                                jiaolu_train_style = f"{utils.EMU_code_formatter(info_EMU_code[0]['emu_no'])}与{utils.EMU_code_formatter(info_EMU_code[1]['emu_no'])}重联"
+                            else:
+                                jiaolu_train_style = utils.EMU_code_formatter(info_EMU_code[0]['emu_no'])
 
                 else:
                     jiaolu_train_style = stop_time[0]["jiaolu_train_style"] # 车底类型（普通车）

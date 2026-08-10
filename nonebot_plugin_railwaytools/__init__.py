@@ -8,7 +8,6 @@ from nonebot.plugin import PluginMetadata  # type: ignore
 from nonebot.params import CommandArg  # type: ignore
 from nonebot.rule import to_me  # type: ignore
 from .emu_function import handle_emu_number , handle_train_number
-from .picture_function import handle_xiaguanzhan_photo , handle_EMU_route_schedule
 from .train_info import handle_train_info
 from .station_screen import handle_station_screen
 from .route_info import handle_route_info
@@ -26,7 +25,6 @@ __plugin_meta__ = PluginMetadata(
     /大屏 [车站名称] - 通过车站名称查看车站大屏
     /线路 [线路名称] - 查询某条铁路基本信息
     /车站 [车站名称] - 查询某车站基本信息
-    /下关站 [机车车号] - 通过车号查看下关站机车户口照
     /机车信息 [机车车号] - 通过车号查询机车/动车组基本信息
     /help - 查看帮助信息
     """,
