@@ -1,0 +1,30 @@
+{
+  "name": "yunzai-plugin-railwaytools",
+  "version": "1.0.0",
+  "description": "面向 Yunzai-Bot 的铁路信息查询插件",
+  "type": "module",
+  "main": "index.js",
+  "exports": "./index.js",
+  "scripts": {
+    "check": "node --check index.js && node --check apps/railway-tools.js && node --check model/api.js && node --check model/constants.js && node --check model/formatters.js && node --check model/services.js && node --check model/utils.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/help660vip/Yunzai-plugin-railwaytools.git"
+  },
+  "keywords": [
+    "yunzai",
+    "yunzai-bot",
+    "qqbot",
+    "onebot",
+    "bot-plugin",
+    "railway",
+    "train",
+    "railway-tools"
+  ]
+}
