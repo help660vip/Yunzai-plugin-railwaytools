@@ -5,14 +5,24 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { createChromeRenderer } from './chrome-renderer.js'
 
 import {
+  ASSISTANT_HELP_TEXT,
+  formatEncyclopedia,
+  formatRandomTrain,
+  formatRealtimeStatus
+} from '../model/assistant-formatters.js'
+import {
+  queryEncyclopedia,
+  queryRandomTrain,
+  queryRealtimeStatus
+} from '../model/assistant-services.js'
+import {
   formatEmuAssignments,
   formatLocomotive,
   formatRoute,
   formatStation,
   formatStationScreen,
   formatTrainAssignments,
-  formatTrainDetails,
-  HELP_TEXT
+  formatTrainDetails
 } from '../model/formatters.js'
 import { renderTextImage } from '../model/render-text-image.js'
 import {
@@ -36,10 +46,13 @@ const artifactPrefixes = Object.freeze({
   '#车号': 'emu-number',
   '#车次': 'train-number',
   '#查询': 'train-query',
+  '#实时': 'realtime',
   '#大屏': 'station-screen',
   '#线路': 'route',
   '#车站': 'station',
-  '#机车信息': 'locomotive'
+  '#机车信息': 'locomotive',
+  '#铁路百科': 'encyclopedia',
+  '#随机列车': 'random-train'
 })
 
 const results = []
@@ -259,6 +272,32 @@ async function attempt(command, parameter, query, formatter, hasResult, options)
   }
 }
 
+async function attemptWithRetries(
+  command,
+  parameter,
+  query,
+  formatter,
+  hasResult,
+  options,
+  retries = 2
+) {
+  let lastError = null
+  for (let attemptIndex = 0; attemptIndex < retries; attemptIndex += 1) {
+    try {
+      const data = await query(parameter)
+      await recordFormatted(command, parameter, data, formatter, hasResult(data), options)
+      return data
+    } catch (error) {
+      lastError = error
+      if (attemptIndex + 1 < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 250))
+      }
+    }
+  }
+  record(command, parameter, 'FAIL', `${errorText(lastError)}（已尝试 ${retries} 次）`)
+  return null
+}
+
 async function findTrainDetails() {
   let firstValid = null
   for (const trainCode of trainCandidates) {
@@ -379,21 +418,24 @@ async function main() {
 
   try {
     await initializeScreenshotRuntime()
-    await recordFormatted('#车迷帮助', '', HELP_TEXT, (text) => text, true)
+    await recordFormatted('#车迷帮助', '', ASSISTANT_HELP_TEXT, (text) => text, true)
 
     const details = await findTrainDetails()
     if (details) {
       await recordFormatted('#车次', details.rawTrainCode, details, formatTrainDetails, details.stops.length > 0)
+      await attempt('#实时', details.rawTrainCode, queryRealtimeStatus, formatRealtimeStatus, () => true)
 
       const emu = await findEmuAssignments()
       const emuNumber = emu?.records?.find((item) => item.emuNumber)?.emuNumber
       if (emuNumber) {
-        await attempt(
+        await attemptWithRetries(
           '#车次',
           emuNumber,
           queryTrainAssignments,
           formatTrainAssignments,
-          (data) => data.records.length > 0
+          (data) => data.records.length > 0,
+          undefined,
+          2
         )
       } else {
         record('#车次', '由真实车组担当结果派生', 'SKIP', '没有可用于反查的真实动车组号')
@@ -417,6 +459,26 @@ async function main() {
     }
 
     await findRoute()
+    await attempt(
+      '#铁路百科',
+      'CR400AF',
+      queryEncyclopedia,
+      formatEncyclopedia,
+      (data) => data.entries.length > 0
+    )
+    await attempt(
+      '#铁路百科',
+      '线路 宣杭铁路',
+      queryEncyclopedia,
+      formatEncyclopedia,
+      (data) => data.entries.length > 0
+    )
+    try {
+      const randomTrain = await queryRandomTrain()
+      await recordFormatted('#随机列车', '', randomTrain, formatRandomTrain, true)
+    } catch (error) {
+      record('#随机列车', '', 'FAIL', errorText(error))
+    }
     await attempt(
       '#机车信息',
       'HXD1D-1898',

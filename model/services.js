@@ -8,7 +8,7 @@ import {
   getLocomotiveAllocationIndex,
   RailwayApiError,
   searchCnrail
-} from './api.js'
+} from './cached-api.js'
 import { MAX_ASSIGNMENT_ITEMS, MAX_LIST_ITEMS } from './constants.js'
 import {
   asNonEmptyString,
@@ -385,5 +385,7 @@ export function getPublicErrorMessage(error) {
     if (error.code === 'NOT_FOUND') return '未查询到相关信息'
     return '铁路数据服务暂时不可用，请稍后再试'
   }
+  if (error?.code === 'INVALID_CACHE_DATA') return '铁路数据服务返回异常，请稍后再试'
+  if (error?.code === 'PROVIDER_UNAVAILABLE') return '列车实时状态数据源暂时不可用，请稍后再试'
   return '查询时发生异常，请稍后再试'
 }

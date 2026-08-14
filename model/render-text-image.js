@@ -147,10 +147,19 @@ export function buildRenderHtml(text, options = {}) {
       font: inherit;
       font-size: 17px;
       font-weight: 400;
-      line-height: 1.35;
+      line-height: 1.45;
+      letter-spacing: .01em;
+      font-variant-numeric: tabular-nums;
+      text-rendering: optimizeLegibility;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
       word-break: break-word;
+    }
+    .query-content::first-line {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.35;
     }
     .footer {
       display: flex;

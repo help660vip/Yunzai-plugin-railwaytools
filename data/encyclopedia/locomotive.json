@@ -1,0 +1,161 @@
+[
+  {
+    "id": "HXD1D",
+    "name": "和谐电 1D 型电力机车",
+    "category": "快速客运电力机车",
+    "aliases": [
+      "和谐1D",
+      "HXD1D型"
+    ],
+    "summary": "HXD1D 是面向快速旅客列车牵引的大功率交流传动电力机车。",
+    "details": [
+      "最高运营速度为 160 km/h。",
+      "采用 Co-Co 轴式和 7200 kW 轮周牵引功率。",
+      "配置车载安全系统并采用再生制动。"
+    ],
+    "fact": "HXD1D 采用快速客运交流传动转向架平台。",
+    "source": "中国中车"
+  },
+  {
+    "id": "DF4D",
+    "name": "东风 4D 型内燃机车",
+    "category": "客运内燃机车",
+    "aliases": [
+      "东风4D",
+      "DF4D型"
+    ],
+    "summary": "DF4D 是东风 4 系列中面向旅客列车牵引的电传动内燃机车车型。",
+    "details": [
+      "车型曾广泛用于非电气化铁路旅客列车牵引。",
+      "根据运用需求形成了不同速度等级和用途的衍生型号。"
+    ],
+    "fact": "东风系列型号中的 DF 是“东风”的汉语拼音首字母。",
+    "source": "中国铁路公开资料"
+  },
+  {
+    "id": "HXD3D",
+    "name": "和谐3D型电力机车",
+    "category": "机车型号",
+    "aliases": [
+      "HXD3D"
+    ],
+    "summary": "中国铁路电力机车车型。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q10921673"
+  },
+  {
+    "id": "HXD3C",
+    "name": "和谐3C型电力机车",
+    "category": "机车型号",
+    "aliases": [
+      "HXD3C"
+    ],
+    "summary": "中国铁路电力机车车型。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q10862278"
+  },
+  {
+    "id": "HXD1",
+    "name": "和谐1型电力机车",
+    "category": "机车型号",
+    "aliases": [
+      "HXD1"
+    ],
+    "summary": "中国铁路电力机车车型。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q860766"
+  },
+  {
+    "id": "HXD2",
+    "name": "HXD2机车动力轮对的集成有限元模型",
+    "category": "机车型号",
+    "aliases": [
+      "HXD2"
+    ],
+    "summary": "HXD2机车动力轮对的集成有限元模型是机车型号。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q99469208"
+  },
+  {
+    "id": "HXN5",
+    "name": "和谐5型内燃机车",
+    "category": "机车型号",
+    "aliases": [
+      "HXN5"
+    ],
+    "summary": "和谐5型内燃机车是机车型号。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q5099870"
+  },
+  {
+    "id": "FXN3B",
+    "name": "复兴3B型内燃机车",
+    "category": "机车型号",
+    "aliases": [
+      "FXN3B"
+    ],
+    "summary": "调车内燃机车。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q125209161"
+  },
+  {
+    "id": "SS9",
+    "name": "韶山9型电力机车",
+    "category": "机车型号",
+    "aliases": [
+      "SS9"
+    ],
+    "summary": "中国铁路电力机车车型。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q742252"
+  },
+  {
+    "id": "DF11G",
+    "name": "东风11G型柴油机车",
+    "category": "机车型号",
+    "aliases": [
+      "DF11G"
+    ],
+    "summary": "中国铁路柴油机车车型。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q10871125"
+  },
+  {
+    "id": "DF8B",
+    "name": "东风8B型柴油机车",
+    "category": "机车型号",
+    "aliases": [
+      "DF8B"
+    ],
+    "summary": "中国铁路一款主型柴油机车。",
+    "details": [
+      "该条目属于机车基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q10871152"
+  }
+]

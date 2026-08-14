@@ -1,0 +1,165 @@
+[
+  {
+    "id": "CR400AF",
+    "name": "复兴号 CR400AF 型动车组",
+    "category": "高速动车组",
+    "aliases": [
+      "400AF",
+      "复兴号AF",
+      "中国标准动车组AF"
+    ],
+    "summary": "CR400AF 是时速 350 公里的复兴号中国标准动车组基础车型。",
+    "details": [
+      "基础车型采用 8 辆编组、4 动 4 拖。",
+      "持续运营速度为 350 km/h。",
+      "具备互联互通、节能环保和列车状态感知等设计特点。"
+    ],
+    "fact": "CR400AF 与 CR400BF 于 2017 年在京沪高速铁路双向首发。",
+    "source": "中国中车"
+  },
+  {
+    "id": "CR400BF",
+    "name": "复兴号 CR400BF 型动车组",
+    "category": "高速动车组",
+    "aliases": [
+      "400BF",
+      "复兴号BF",
+      "中国标准动车组BF"
+    ],
+    "summary": "CR400BF 是复兴号中国标准动车组平台的时速 350 公里车型。",
+    "details": [
+      "与同速度等级的中国标准动车组具备互联互通能力。",
+      "车型系列包含标准编组、长编组及智能动车组衍生型号。"
+    ],
+    "fact": "型号中的 400 是速度等级代码，F 表示动力分散电动车组。",
+    "source": "中国中车"
+  },
+  {
+    "id": "CRH2A",
+    "name": "和谐号 CRH2A 型动车组",
+    "category": "动车组",
+    "aliases": [
+      "2A",
+      "和谐号2A"
+    ],
+    "summary": "CRH2A 是 CRH2 系列中的时速 250 公里级动车组车型。",
+    "details": [
+      "常见标准编组为 8 辆。",
+      "该系列长期服务于客运专线、城际铁路和既有线动车组列车。"
+    ],
+    "fact": "CRH2A 是中国早期大规模投入运营的动车组车型之一。",
+    "source": "中国中车"
+  },
+  {
+    "id": "CR300AF",
+    "name": "复兴号CR300AF型电力动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CR300AF"
+    ],
+    "summary": "中国铁路新型动力分散式电力动车组型号。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q57431434"
+  },
+  {
+    "id": "CR300BF",
+    "name": "复兴号CR300BF型电力动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CR300BF"
+    ],
+    "summary": "中国铁路新型动力分散式电力动车组型号。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q59769518"
+  },
+  {
+    "id": "CRH380A",
+    "name": "和谐号CRH380A型电力动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CRH380A"
+    ],
+    "summary": "中国铁路动力分散式电力动车组型号。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q856457"
+  },
+  {
+    "id": "CRH380B",
+    "name": "和谐号CRH380B型电力动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CRH380B"
+    ],
+    "summary": "中国铁路新型动力分散式电力动车组型号。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q10921678"
+  },
+  {
+    "id": "CRH1A",
+    "name": "和谐号CRH1型电力动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CRH1A"
+    ],
+    "summary": "中國鐵路動力分散式電力動車組型號。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q596982"
+  },
+  {
+    "id": "CRH3C",
+    "name": "和谐号CRH3型电力动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CRH3C"
+    ],
+    "summary": "和谐号CRH3型电力动车组是动车组车型。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q856434"
+  },
+  {
+    "id": "CRH5A",
+    "name": "和谐号CRH5型电力动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CRH5A"
+    ],
+    "summary": "基于法国阿尔斯通Pendolino开发但取消装设摆式功能的电力动车组。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q856438"
+  },
+  {
+    "id": "CR200J",
+    "name": "复兴号CR200J型动车组",
+    "category": "动车组与高铁车型",
+    "aliases": [
+      "CR200J"
+    ],
+    "summary": "中国铁路动力集中式电力动车组型号。",
+    "details": [
+      "该条目属于动车组基础资料，可通过关键词继续检索。"
+    ],
+    "source": "Wikidata（CC0）",
+    "sourceId": "Q50413006"
+  }
+]

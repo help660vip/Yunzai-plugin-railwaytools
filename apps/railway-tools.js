@@ -1,14 +1,24 @@
 import plugin from '../../../lib/plugins/plugin.js'
 
 import {
+  ASSISTANT_HELP_TEXT,
+  formatEncyclopedia,
+  formatRandomTrain,
+  formatRealtimeStatus
+} from '../model/assistant-formatters.js'
+import {
+  queryEncyclopedia,
+  queryRandomTrain,
+  queryRealtimeStatus
+} from '../model/assistant-services.js'
+import {
   formatEmuAssignments,
   formatLocomotive,
   formatRoute,
   formatStation,
   formatStationScreen,
   formatTrainAssignments,
-  formatTrainDetails,
-  HELP_TEXT
+  formatTrainDetails
 } from '../model/formatters.js'
 import {
   getPublicErrorMessage,
@@ -43,17 +53,20 @@ const COMMANDS = Object.freeze({
   emuNumber: ['车号', 'ch', '查车号'],
   trainNumber: ['车次', 'cc', '查车次'],
   trainInfo: ['列车查询', 'cx', '查询'],
+  realtime: ['实时状态', '实时运行', '实时', 'ss'],
   stationScreen: ['车站大屏', 'dp', '大屏'],
   route: ['线路信息', 'xl', '线路', '铁路', '线'],
   station: ['车站信息', 'cz', '车站', '站'],
-  locomotive: ['机车信息', 'jcxx']
+  locomotive: ['机车信息', 'jcxx'],
+  encyclopedia: ['铁路百科', '百科', 'bk'],
+  randomTrain: ['随机列车', '随机火车', 'sjlc']
 })
 
 export class RailwayTools extends plugin {
   constructor() {
     super({
       name: '铁路工具箱',
-      dsc: '列车、车组、车站、线路与机车信息查询',
+      dsc: '列车、车组、车站、线路、机车与铁路百科查询',
       event: 'message',
       priority: 5000,
       rule: [
@@ -61,16 +74,19 @@ export class RailwayTools extends plugin {
         { reg: commandRule(COMMANDS.emuNumber), fnc: 'handleEmuNumber' },
         { reg: commandRule(COMMANDS.trainNumber), fnc: 'handleTrainNumber' },
         { reg: commandRule(COMMANDS.trainInfo), fnc: 'handleTrainInfo' },
+        { reg: commandRule(COMMANDS.realtime), fnc: 'handleRealtime' },
         { reg: commandRule(COMMANDS.stationScreen), fnc: 'handleStationScreen' },
         { reg: commandRule(COMMANDS.route), fnc: 'handleRoute' },
         { reg: commandRule(COMMANDS.station), fnc: 'handleStation' },
-        { reg: commandRule(COMMANDS.locomotive), fnc: 'handleLocomotive' }
+        { reg: commandRule(COMMANDS.locomotive), fnc: 'handleLocomotive' },
+        { reg: commandRule(COMMANDS.encyclopedia), fnc: 'handleEncyclopedia' },
+        { reg: commandRule(COMMANDS.randomTrain), fnc: 'handleRandomTrain' }
       ]
     })
   }
 
   async showHelp() {
-    await this.replyRenderedText(HELP_TEXT)
+    await this.replyRenderedText(ASSISTANT_HELP_TEXT)
     return true
   }
 
@@ -85,8 +101,12 @@ export class RailwayTools extends plugin {
       return true
     }
 
+    return this.replyQuery(() => query(argument), formatter, options)
+  }
+
+  async replyQuery(query, formatter, options = {}) {
     try {
-      const result = await query(argument)
+      const result = await query()
       const formatted = formatter(result)
       const shouldRender = options.render !== false && options.shouldRender?.(result) === true
       if (shouldRender && typeof formatted === 'string') {
@@ -171,6 +191,16 @@ export class RailwayTools extends plugin {
     )
   }
 
+  async handleRealtime() {
+    return this.execute(
+      COMMANDS.realtime,
+      '请输入列车车次，例如：#实时 G123',
+      queryRealtimeStatus,
+      formatRealtimeStatus,
+      { shouldRender: () => true }
+    )
+  }
+
   async handleStationScreen() {
     return this.execute(
       COMMANDS.stationScreen,
@@ -208,6 +238,24 @@ export class RailwayTools extends plugin {
       queryLocomotive,
       formatLocomotive,
       { render: false }
+    )
+  }
+
+  async handleEncyclopedia() {
+    return this.execute(
+      COMMANDS.encyclopedia,
+      '请输入铁路百科关键词，例如：#铁路百科 CR400AF',
+      queryEncyclopedia,
+      formatEncyclopedia,
+      { shouldRender: (result) => result.entries.length > 0 }
+    )
+  }
+
+  async handleRandomTrain() {
+    return this.replyQuery(
+      queryRandomTrain,
+      formatRandomTrain,
+      { shouldRender: () => true }
     )
   }
 }

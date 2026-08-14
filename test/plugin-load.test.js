@@ -14,7 +14,7 @@ async function createYunzaiFixture() {
   await mkdir(pluginRoot, { recursive: true })
   await mkdir(baseDir, { recursive: true })
 
-  for (const entry of ['apps', 'model', 'index.js', 'package.json']) {
+  for (const entry of ['apps', 'data', 'model', 'index.js', 'package.json']) {
     await cp(path.join(projectRoot, entry), path.join(pluginRoot, entry), { recursive: true })
   }
 
@@ -89,6 +89,9 @@ test('loads through the Yunzai entry and routes required commands', async (conte
   assert.equal(matches('#车次 g123').length, 1)
   assert.equal(matches('#车次    G123 ').length, 1)
   assert.equal(matches('#车迷帮助').length, 1)
+  assert.equal(matches('#实时 g123').length, 1)
+  assert.equal(matches('#铁路百科 CR400AF').length, 1)
+  assert.equal(matches('#随机列车').length, 1)
   assert.equal(matches('/' + '车次 G123').length, 0)
   assert.equal(matches('/' + 'help').length, 0)
 
@@ -118,7 +121,7 @@ test('loads through the Yunzai entry and routes required commands', async (conte
     assert.equal(await instance.handleTrainNumber(), true)
     assert.ok(String(replies.at(-1)).includes('车次：G123'))
   }
-  assert.deepEqual(requestedCodes, ['G123', 'G123', 'G123'])
+  assert.deepEqual(requestedCodes, ['G123'])
 
   const helpReplies = []
   const help = new entry.RailwayTools()
@@ -126,4 +129,16 @@ test('loads through the Yunzai entry and routes required commands', async (conte
   assert.equal(await help.showHelp(), true)
   assert.match(helpReplies[0], /【车迷工具箱】/u)
   assert.match(helpReplies[0], /#车次 G123/u)
+  assert.match(helpReplies[0], /#实时 G123/u)
+  assert.match(helpReplies[0], /#铁路百科 CR400AF/u)
+  assert.match(helpReplies[0], /#随机列车/u)
+
+  const encyclopediaReplies = []
+  const encyclopedia = new entry.RailwayTools()
+  encyclopedia.e = {
+    msg: '#铁路百科 cr400af',
+    reply: async (reply) => encyclopediaReplies.push(reply)
+  }
+  assert.equal(await encyclopedia.handleEncyclopedia(), true)
+  assert.match(encyclopediaReplies[0], /【铁路百科】复兴号 CR400AF 型动车组/u)
 })

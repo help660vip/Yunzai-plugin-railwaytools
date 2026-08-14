@@ -1,6 +1,6 @@
 # 命令渲染测试报告
 
-- 执行时间：2026-08-14T10:13:22.448Z
+- 执行时间：2026-08-14T12:11:46.765Z
 - Node.js：v22.23.2
 - 平台：win32 x64
 - 截图环境：Chrome Headless 临时 HTML（CDP 真实截图）
@@ -10,28 +10,23 @@
 
 | 实际触发格式 | 预期输出 | 实际输出 | 结果 | 图片验收 | 说明 | 截图 |
 |---|---|---|---|---|---|---|
-| #车迷帮助 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=596×815；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/help-default-1.png](images/help-default-1.png) |
-| #查询 G895 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=492×471；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-g895-1.png](images/train-query-g895-1.png) |
-| #查询 G6005 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=444×402；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-g6005-1.png](images/train-query-g6005-1.png) |
-| #查询 C7213 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=444×540；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-c7213-1.png](images/train-query-c7213-1.png) |
-| #查询 D169 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=485×585；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-d169-1.png](images/train-query-d169-1.png) |
-| #查询 T222 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=456×585；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-t222-1.png](images/train-query-t222-1.png) |
-| #车次 G895 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=492×471；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-number-g895-1.png](images/train-number-g895-1.png) |
-| #车号 G895 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=444×402；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/emu-number-g895-1.png](images/emu-number-g895-1.png) |
-| #车次 CR400AFAE-2402 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=512×402；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-number-cr400afae-2402-1.png](images/train-number-cr400afae-2402-1.png) |
-| #大屏 上海虹桥 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=720×1365；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/station-screen-1.png](images/station-screen-1.png) |
-| #车站 上海虹桥 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=444×654；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/station-1.png](images/station-1.png) |
-| #线路 京沪高速铁路 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=626×952；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/route-1.png](images/route-1.png) |
+| #车迷帮助 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=692×1090；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/help-default-1.png](images/help-default-1.png) |
+| #查询 G895 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=575×499；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-g895-1.png](images/train-query-g895-1.png) |
+| #查询 G6005 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=451×425；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-g6005-1.png](images/train-query-g6005-1.png) |
+| #查询 C7213 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=479×573；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-c7213-1.png](images/train-query-c7213-1.png) |
+| #查询 D169 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=568×622；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-d169-1.png](images/train-query-d169-1.png) |
+| #查询 T222 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=537×622；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-query-t222-1.png](images/train-query-t222-1.png) |
+| #车次 G895 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=575×499；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-number-g895-1.png](images/train-number-g895-1.png) |
+| #实时 G895 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=720×375；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/realtime-g895-1.png](images/realtime-g895-1.png) |
+| #车号 G895 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=463×425；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/emu-number-g895-1.png](images/emu-number-g895-1.png) |
+| #车次 CR400AFAE-2402 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=602×425；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/train-number-cr400afae-2402-1.png](images/train-number-cr400afae-2402-1.png) |
+| #大屏 上海虹桥 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=720×1460；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/station-screen-1.png](images/station-screen-1.png) |
+| #车站 上海虹桥 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=444×696；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/station-1.png](images/station-1.png) |
+| #线路 京沪高速铁路 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=720×1016；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/route-1.png](images/route-1.png) |
+| #铁路百科 CR400AF | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=720×400；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/encyclopedia-cr400af-1.png](images/encyclopedia-cr400af-1.png) |
+| #铁路百科 线路 宣杭铁路 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=591×425；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/encyclopedia-1.png](images/encyclopedia-1.png) |
+| #随机列车 | 有效结果为 Puppeteer 图片；空结果、错误或渲染失败为普通文字 | 1 张真实 PNG（Chrome Headless） | PASS | 数量=1；尺寸=632×400；分页=单页；字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG | 生成 1 张真实截图 | [images/random-train-default-1.png](images/random-train-default-1.png) |
 | #机车信息 HXD1D-1898 | 实拍图消息段与普通文字，不进行 Puppeteer 渲染 | 实拍图消息段与普通文字 | PASS | SKIP（按产品规则不使用 Puppeteer） | 保持原生消息；未调用 Puppeteer | SKIP（无截图） |
-
-## 人工视觉检查
-
-- 结果：`PASS`（12/12 张真实 PNG）。
-- 中文字体：全部正常显示，无乱码或异常问号。
-- 背景与遮罩：动态背景、半透明遮罩和毛玻璃区域均正常。
-- 内容边界：正文和页脚均无截断；车站大屏长图内容完整。
-- 页脚地址：完整 `https://github.com/help660vip/Yunzai-plugin-railwaytools` 均清晰可见。
-- 页脚文案：所有图片均未出现 `Powered by`。
 
 ## 判定说明
 

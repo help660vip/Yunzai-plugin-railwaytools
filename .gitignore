@@ -27,3 +27,7 @@ Thumbs.db
 # Package manager caches
 .npm/
 .pnpm-store/
+
+# Maintainer tooling
+__pycache__/
+*.py[cod]

@@ -1,13 +1,9 @@
-import {
-  ALLOCATION_CACHE_TTL_MS,
-  API_ENDPOINTS,
-  HTTP_TIMEOUT_MS
-} from './constants.js'
+import { API_ENDPOINTS, HTTP_TIMEOUT_MS } from './constants.js'
 import { decryptCnrailData, normalizeIdentifier } from './utils.js'
 
 const DEFAULT_HEADERS = Object.freeze({
   Accept: 'application/json, text/plain, */*',
-  'User-Agent': 'Yunzai-plugin-railwaytools/1.0 (+https://github.com/help660vip/Yunzai-plugin-railwaytools)'
+  'User-Agent': 'Yunzai-plugin-railwaytools (+https://github.com/help660vip/Yunzai-plugin-railwaytools)'
 })
 
 export class RailwayApiError extends Error {
@@ -104,12 +100,6 @@ export async function fetchCnrailStation(stationId) {
   return data
 }
 
-let allocationCache = {
-  expiresAt: 0,
-  index: null,
-  loading: null
-}
-
 async function refreshAllocationIndex() {
   const raw = await fetchJson(API_ENDPOINTS.locomotiveAllocation, { timeout: 30_000 })
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
@@ -132,26 +122,9 @@ async function refreshAllocationIndex() {
     throw new RailwayApiError('机车名录没有可用数据', { code: 'INVALID_RESPONSE' })
   }
 
-  allocationCache.index = index
-  allocationCache.expiresAt = Date.now() + ALLOCATION_CACHE_TTL_MS
   return index
 }
 
 export async function getLocomotiveAllocationIndex() {
-  if (allocationCache.index && Date.now() < allocationCache.expiresAt) {
-    return allocationCache.index
-  }
-
-  if (!allocationCache.loading) {
-    allocationCache.loading = refreshAllocationIndex().finally(() => {
-      allocationCache.loading = null
-    })
-  }
-
-  try {
-    return await allocationCache.loading
-  } catch (error) {
-    if (allocationCache.index) return allocationCache.index
-    throw error
-  }
+  return refreshAllocationIndex()
 }

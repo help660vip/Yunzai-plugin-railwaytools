@@ -39,3 +39,8 @@ SOFTWARE.
 Runtime query results may use data supplied by 12306, rail.re,
 cnrail.geogv.org, 12036.com and leaf2006/CR-Locomotive-Allocation. Their names,
 data and services remain subject to their respective owners' terms.
+
+Railway encyclopedia seed records may include structured data synchronized
+from Wikidata. Wikidata structured data is made available under the Creative
+Commons CC0 1.0 Universal Public Domain Dedication. Generated records retain a
+`sourceId` field so maintainers can trace the corresponding Wikidata entity.

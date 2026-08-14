@@ -8,7 +8,6 @@ export const API_ENDPOINTS = Object.freeze({
 })
 
 export const HTTP_TIMEOUT_MS = 15_000
-export const ALLOCATION_CACHE_TTL_MS = 6 * 60 * 60 * 1000
 export const MAX_LIST_ITEMS = 10
 export const MAX_ASSIGNMENT_ITEMS = 8
 export const DATA_SOURCES = Object.freeze({
