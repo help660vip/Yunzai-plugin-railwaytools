@@ -63,7 +63,8 @@ npm test
 npm run test:render
 ~~~
 
-`npm test` 覆盖命令加载、输入容错、缓存、Provider、百科、随机列车和图片渲染。  
+`npm test` 覆盖命令加载、输入容错、缓存、Provider、百科、随机列车和图片渲染。
+
 `npm run test:render` 访问真实铁路数据源，并使用 TRSS Puppeteer 或测试专用 Chrome Headless 生成 PNG。
 
 真实命令报告保存在 [command-render-tests/report.md](../command-render-tests/report.md)，截图保存在 `command-render-tests/images/`。不得提交占位图或把接口失败记录成成功。
