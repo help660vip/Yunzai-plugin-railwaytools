@@ -2,6 +2,11 @@
 
 All notable version changes are documented in this file.
 
+## 1.1.1 - 2026-08-14
+
+- 提供系统 Chrome 临时 HTML/CDP 的可复现真实截图验证产物。
+- 图片页脚显示完整仓库地址。
+
 ## 1.1.0 - 2026-08-14
 
 - 查询成功后的多行详情支持图片回复。

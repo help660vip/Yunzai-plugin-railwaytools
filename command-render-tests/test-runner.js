@@ -1,6 +1,8 @@
-import { access, mkdir, readdir, rm, writeFile } from 'node:fs/promises'
+import { access, mkdir, mkdtemp, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+
+import { createChromeRenderer } from './chrome-renderer.js'
 
 import {
   formatEmuAssignments,
@@ -26,7 +28,6 @@ import {
 const testRoot = path.dirname(fileURLToPath(import.meta.url))
 const pluginRoot = path.resolve(testRoot, '..')
 const imageRoot = path.join(testRoot, 'images')
-const imageReadmePath = path.join(imageRoot, 'README.md')
 const reportPath = path.join(testRoot, 'report.md')
 const trainCandidates = ['G895', 'G6005', 'C7213', 'D169', 'T222']
 const routeCandidates = ['京沪高速铁路', '京沪高铁', '京广高速铁路']
@@ -43,6 +44,9 @@ const artifactPrefixes = Object.freeze({
 
 const results = []
 let screenshotRuntime = null
+let chromeRenderer = null
+let screenshotInitializationError = null
+let imageStagingRoot = null
 let screenshotRuntimeNote = ''
 
 function errorText(error) {
@@ -60,7 +64,10 @@ function expectedOutput(command) {
 
 function actualOutput(result) {
   if (result.command === '#机车信息' && result.status === 'PASS') return '实拍图消息段与普通文字'
-  if (result.status === 'PASS') return `${result.images.length} 张 Puppeteer 图片`
+  if (result.status === 'PASS') {
+    const renderer = screenshotRuntime ? 'TRSS-Yunzai Puppeteer' : 'Chrome Headless'
+    return `${result.images.length} 张真实 PNG（${renderer}）`
+  }
   if (result.status === 'SKIP-IMAGE') return '业务文字已生成；图片未生成'
   if (result.status === 'EMPTY') return '普通文字空结果'
   if (result.status === 'SKIP') return '未执行派生查询'
@@ -98,18 +105,61 @@ async function loadTrssPuppeteer() {
   }
 }
 
+async function initializeScreenshotRuntime() {
+  screenshotRuntime = await loadTrssPuppeteer()
+  if (screenshotRuntime) return
+  try {
+    const fallback = await createChromeRenderer()
+    chromeRenderer = fallback.renderer
+    screenshotRuntimeNote = fallback.note
+  } catch (error) {
+    screenshotInitializationError = error
+    screenshotRuntimeNote = `Chrome Headless 启动失败（${error?.name ?? 'Error'}）`
+  }
+}
+
+function hasScreenshotRuntime() {
+  return Boolean(screenshotRuntime || chromeRenderer)
+}
+
 function safeFileName(value) {
   return value.replace(/[^a-z0-9-]+/giu, '-').replace(/^-+|-+$/gu, '').toLowerCase()
 }
 
-async function prepareImageDirectory() {
-  await mkdir(imageRoot, { recursive: true })
-  const entries = await readdir(imageRoot, { withFileTypes: true })
-  for (const entry of entries) {
-    if (entry.isFile() && entry.name.toLowerCase().endsWith('.png')) {
-      await rm(path.join(imageRoot, entry.name), { force: true })
-    }
+function assertSafeArtifactDirectory(directory, prefix) {
+  const resolvedRoot = path.resolve(testRoot)
+  const resolvedDirectory = path.resolve(directory)
+  const relative = path.relative(resolvedRoot, resolvedDirectory)
+  const safe = relative && !relative.startsWith('..') && !path.isAbsolute(relative) &&
+    path.basename(resolvedDirectory).startsWith(prefix)
+  if (!safe) throw new Error('Refusing to modify an unsafe image artifact directory')
+  return resolvedDirectory
+}
+
+async function removeArtifactDirectory(directory, prefix) {
+  const safeDirectory = assertSafeArtifactDirectory(directory, prefix)
+  await rm(safeDirectory, { recursive: true, force: true })
+}
+
+async function createImageStagingDirectory() {
+  const staging = await mkdtemp(path.join(testRoot, '.images-staging-'))
+  assertSafeArtifactDirectory(staging, '.images-staging-')
+  return staging
+}
+
+async function replaceImageDirectory(staging) {
+  const safeStaging = assertSafeArtifactDirectory(staging, '.images-staging-')
+  const backup = path.join(testRoot, `.images-backup-${process.pid}-${Date.now()}`)
+  assertSafeArtifactDirectory(backup, '.images-backup-')
+  const hadExisting = await fileExists(imageRoot)
+  if (hadExisting) await rename(imageRoot, backup)
+  try {
+    await rename(safeStaging, imageRoot)
+  } catch (error) {
+    if (hadExisting && await fileExists(backup)) await rename(backup, imageRoot)
+    throw error
   }
+  if (hadExisting) await removeArtifactDirectory(backup, '.images-backup-')
 }
 
 function readPngDimensions(buffer) {
@@ -125,27 +175,34 @@ function readPngDimensions(buffer) {
 }
 
 async function renderArtifact(command, parameter, text) {
-  if (!screenshotRuntime) return []
+  if (!hasScreenshotRuntime()) return []
 
-  const previousSegment = globalThis.segment
-  globalThis.segment = { image: (buffer) => ({ buffer }) }
-  try {
-    const segments = await renderTextImage({ runtime: { puppeteer: screenshotRuntime } }, text)
-    const prefix = artifactPrefixes[command] ?? 'result'
-    const stem = safeFileName(`${prefix}-${parameter || 'default'}`)
-    const files = []
-    for (let index = 0; index < segments.length; index += 1) {
-      const buffer = segments[index]?.buffer
-      if (!Buffer.isBuffer(buffer)) throw new TypeError('渲染结果不是 Buffer 图片段')
-      const fileName = `${stem}-${index + 1}.png`
-      const dimensions = readPngDimensions(buffer)
-      await writeFile(path.join(imageRoot, fileName), buffer)
-      files.push({ file: `images/${fileName}`, ...dimensions })
+  let buffers
+  if (chromeRenderer) {
+    buffers = await chromeRenderer.render(text)
+  } else {
+    const previousSegment = globalThis.segment
+    globalThis.segment = { image: (buffer) => ({ buffer }) }
+    try {
+      const segments = await renderTextImage({ runtime: { puppeteer: screenshotRuntime } }, text)
+      buffers = segments.map((segment) => segment?.buffer)
+    } finally {
+      globalThis.segment = previousSegment
     }
-    return files
-  } finally {
-    globalThis.segment = previousSegment
   }
+
+  const prefix = artifactPrefixes[command] ?? 'result'
+  const stem = safeFileName(`${prefix}-${parameter || 'default'}`)
+  const files = []
+  for (let index = 0; index < buffers.length; index += 1) {
+    const buffer = buffers[index]
+    if (!Buffer.isBuffer(buffer)) throw new TypeError('渲染结果不是 Buffer 图片段')
+    const fileName = `${stem}-${index + 1}.png`
+    const dimensions = readPngDimensions(buffer)
+    await writeFile(path.join(imageStagingRoot, fileName), buffer)
+    files.push({ file: `images/${fileName}`, ...dimensions })
+  }
+  return files
 }
 
 async function recordFormatted(
@@ -178,10 +235,12 @@ async function recordFormatted(
 
   try {
     const images = await renderArtifact(command, parameter, formatted)
-    if (screenshotRuntime) {
+    if (hasScreenshotRuntime()) {
       record(command, parameter, 'PASS', `生成 ${images.length} 张真实截图`, images)
+    } else if (screenshotInitializationError) {
+      record(command, parameter, 'FAIL-IMAGE', 'Chrome Headless 已检测到但启动失败')
     } else {
-      record(command, parameter, 'SKIP-IMAGE', '业务结果有效；当前环境无 TRSS Puppeteer，跳过截图')
+      record(command, parameter, 'SKIP-IMAGE', '业务结果有效；当前环境没有可用的 TRSS 或 Chrome CDP 截图运行时')
     }
   } catch (error) {
     record(command, parameter, 'FAIL-IMAGE', errorText(error))
@@ -252,11 +311,13 @@ function reportMarkdown(startedAt) {
           `数量=${result.images.length}`,
           `尺寸=${result.images.map((image) => `${image.width}×${image.height}`).join('、')}`,
           `分页=${result.images.length > 1 ? `${result.images.length} 页，按生成顺序` : '单页'}`,
-          '字体/背景/GitHub=请查看真实 PNG'
+          '字体/背景/GitHub完整地址=https://github.com/help660vip/Yunzai-plugin-railwaytools；请查看真实 PNG'
         ].join('；')
       : result.command === '#机车信息'
         ? 'SKIP（按产品规则不使用 Puppeteer）'
-        : 'SKIP（未生成 PNG；数量、尺寸、分页、字体、背景与 GitHub 页脚均未验收）'
+        : result.status.startsWith('FAIL')
+          ? 'FAIL（未生成 PNG；数量、尺寸、分页、字体、背景与 GitHub 页脚均未通过）'
+          : 'SKIP（未生成 PNG；数量、尺寸、分页、字体、背景与 GitHub 页脚均未验收）'
     const trigger = `${result.command}${result.parameter ? ` ${result.parameter}` : ''}`
     return `| ${trigger} | ${expectedOutput(result.command)} | ${actualOutput(result)} | ${result.status} | ${imageCheck} | ${result.note} | ${artifact} |`
   })
@@ -277,28 +338,34 @@ function reportMarkdown(startedAt) {
     '',
     '## 判定说明',
     '',
-    '- `PASS`：业务查询和预期输出方式均成功；若存在截图链接，文件由 TRSS-Yunzai 的共享 Puppeteer 实际生成。',
-    '- `SKIP-IMAGE`：业务查询成功，但独立工作区没有 TRSS-Yunzai Puppeteer；图片数量、尺寸、分页、字体、背景与 GitHub 页脚均未假定通过。',
+    '- `PASS`：业务查询和预期输出方式均成功；截图链接由 TRSS-Yunzai 共享 Puppeteer 或测试专用 Chrome Headless 实际生成。',
+    '- `SKIP-IMAGE`：业务查询成功，但当前 Node.js 没有 WebSocket 或未检测到 TRSS、Chrome/Chromium；图片验收未假定通过。',
     '- `EMPTY`：真实接口没有返回有效记录，保持普通文字空结果。',
     '- `FAIL` / `FAIL-IMAGE`：真实接口或截图运行失败，错误已如实记录。',
     '- `#机车信息` 按产品规则保留实拍图消息段与普通文字，不进行 Puppeteer 渲染，文字中不得包含 URL。',
+    '- 图片页脚显示完整地址 `https://github.com/help660vip/Yunzai-plugin-railwaytools`；该 URL 仅存在于图片像素中。',
     ''
   ].join('\n')
 }
 
 function imageReadmeMarkdown() {
   const images = results.flatMap((result) => result.images)
-  const state = screenshotRuntime
+  const runtimeName = screenshotRuntime
+    ? 'TRSS-Yunzai 共享 Puppeteer'
+    : chromeRenderer
+      ? 'Chrome Headless 临时 HTML（CDP）'
+      : ''
+  const state = runtimeName
     ? images.length > 0
-      ? `本次通过 TRSS-Yunzai 共享 Puppeteer 生成 ${images.length} 个真实 PNG。`
-      : '本次已加载 TRSS-Yunzai 共享 Puppeteer，但没有成功生成 PNG；请查看测试报告。'
-    : '当前环境未检测到 TRSS-Yunzai 共享 Puppeteer，未生成 PNG；报告中的截图验收明确标记为 SKIP。'
+      ? `本次通过 ${runtimeName} 生成 ${images.length} 个真实 PNG。`
+      : `本次已加载 ${runtimeName}，但没有成功生成 PNG；请查看测试报告。`
+    : '当前环境没有可用截图运行时，未生成 PNG；报告中的截图验收明确标记为 SKIP。'
   return [
     '# 渲染测试图片',
     '',
     state,
     '',
-    '本目录不保存占位图。测试运行器只清理此前生成的 PNG，并保留或重建本说明文件。',
+    '本目录不保存占位图。测试运行器先在临时 staging 中生成并校验全部 PNG，成功后整体替换本目录；失败时保留既有产物。',
     ...(images.length > 0
       ? ['', ...images.map((image) => `- [${image.file}](${path.basename(image.file)})：${image.width}×${image.height}`)]
       : []),
@@ -308,59 +375,92 @@ function imageReadmeMarkdown() {
 
 async function main() {
   const startedAt = new Date().toISOString()
-  await prepareImageDirectory()
-  screenshotRuntime = await loadTrssPuppeteer()
+  imageStagingRoot = await createImageStagingDirectory()
 
-  await recordFormatted('#车迷帮助', '', HELP_TEXT, (text) => text, true)
+  try {
+    await initializeScreenshotRuntime()
+    await recordFormatted('#车迷帮助', '', HELP_TEXT, (text) => text, true)
 
-  const details = await findTrainDetails()
-  if (details) {
-    await recordFormatted('#车次', details.rawTrainCode, details, formatTrainDetails, details.stops.length > 0)
+    const details = await findTrainDetails()
+    if (details) {
+      await recordFormatted('#车次', details.rawTrainCode, details, formatTrainDetails, details.stops.length > 0)
 
-    const emu = await findEmuAssignments()
-    const emuNumber = emu?.records?.find((item) => item.emuNumber)?.emuNumber
-    if (emuNumber) {
-      await attempt(
-        '#车次',
-        emuNumber,
-        queryTrainAssignments,
-        formatTrainAssignments,
-        (data) => data.records.length > 0
-      )
+      const emu = await findEmuAssignments()
+      const emuNumber = emu?.records?.find((item) => item.emuNumber)?.emuNumber
+      if (emuNumber) {
+        await attempt(
+          '#车次',
+          emuNumber,
+          queryTrainAssignments,
+          formatTrainAssignments,
+          (data) => data.records.length > 0
+        )
+      } else {
+        record('#车次', '由真实车组担当结果派生', 'SKIP', '没有可用于反查的真实动车组号')
+      }
+
+      const station = details.stops.find((stop) => stop.station)?.station
+      if (station) {
+        await attempt(
+          '#大屏',
+          station,
+          queryStationScreen,
+          formatStationScreen,
+          (data) => data.trains.length > 0
+        )
+        await attempt('#车站', station, queryStation, formatStation, () => true)
+      } else {
+        record('#大屏 / #车站', '由真实车次结果派生', 'SKIP', '车次结果没有可用车站')
+      }
     } else {
-      record('#车次', '由真实车组担当结果派生', 'SKIP', '没有可用于反查的真实动车组号')
+      record('#车次 / #车号 / #大屏 / #车站', '由真实车次结果派生', 'SKIP', '候选车次均未返回有效详情')
     }
 
-    const station = details.stops.find((stop) => stop.station)?.station
-    if (station) {
-      await attempt(
-        '#大屏',
-        station,
-        queryStationScreen,
-        formatStationScreen,
-        (data) => data.trains.length > 0
-      )
-      await attempt('#车站', station, queryStation, formatStation, () => true)
-    } else {
-      record('#大屏 / #车站', '由真实车次结果派生', 'SKIP', '车次结果没有可用车站')
+    await findRoute()
+    await attempt(
+      '#机车信息',
+      'HXD1D-1898',
+      queryLocomotive,
+      formatLocomotive,
+      (data) => data.records.length > 0,
+      { render: false, requireImagePart: true }
+    )
+  } catch (error) {
+    record('#测试运行器', '内部执行', 'FAIL', errorText(error))
+  } finally {
+    if (chromeRenderer) {
+      try {
+        await chromeRenderer.close()
+      } catch (error) {
+        record('#截图运行时', 'Chrome Headless', 'FAIL-IMAGE', errorText(error))
+      }
     }
-  } else {
-    record('#车次 / #车号 / #大屏 / #车站', '由真实车次结果派生', 'SKIP', '候选车次均未返回有效详情')
   }
 
-  await findRoute()
-  await attempt(
-    '#机车信息',
-    'HXD1D-1898',
-    queryLocomotive,
-    formatLocomotive,
-    (data) => data.records.length > 0,
-    { render: false, requireImagePart: true }
-  )
+  let failures = results.filter((item) => item.status.startsWith('FAIL'))
+  if (failures.length === 0) {
+    try {
+      await writeFile(path.join(imageStagingRoot, 'README.md'), imageReadmeMarkdown(), 'utf8')
+      await replaceImageDirectory(imageStagingRoot)
+      imageStagingRoot = null
+    } catch (error) {
+      record('#测试产物', 'images', 'FAIL-IMAGE', errorText(error))
+    }
+  }
 
-  await writeFile(imageReadmePath, imageReadmeMarkdown(), 'utf8')
+  failures = results.filter((item) => item.status.startsWith('FAIL'))
+  if (failures.length > 0 && imageStagingRoot && await fileExists(imageStagingRoot)) {
+    for (const result of results) {
+      if (result.images.length > 0) {
+        result.images = []
+        result.note += '；本轮存在失败，暂存 PNG 未替换正式产物'
+      }
+    }
+    await removeArtifactDirectory(imageStagingRoot, '.images-staging-')
+    imageStagingRoot = null
+  }
+
   await writeFile(reportPath, reportMarkdown(startedAt), 'utf8')
-  const failures = results.filter((item) => item.status.startsWith('FAIL'))
   process.stdout.write(`命令测试完成：${results.length} 项，${failures.length} 项失败。报告：${reportPath}\n`)
   if (failures.length > 0) process.exitCode = 1
 }

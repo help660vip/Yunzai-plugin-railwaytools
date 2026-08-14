@@ -1,5 +1,5 @@
 const CONTROL_CHARACTERS_RE = /[\u061C\u200B-\u200F\u202A-\u202E\u2060\u2066-\u2069\uFEFF]/gu
-const REPOSITORY_LABEL = 'github.com/help660vip/Yunzai-plugin-railwaytools'
+const REPOSITORY_LABEL = 'https://github.com/help660vip/Yunzai-plugin-railwaytools'
 
 export const DEFAULT_RENDER_OPTIONS = Object.freeze({
   title: '',

@@ -11,7 +11,7 @@ import {
   waitForBackground
 } from '../model/render-text-image.js'
 
-const REPOSITORY_LABEL = 'github.com/help660vip/Yunzai-plugin-railwaytools'
+const REPOSITORY_LABEL = 'https://github.com/help660vip/Yunzai-plugin-railwaytools'
 
 function contentFromHtml(html) {
   return html.match(/<pre class="query-content">([\s\S]*?)<\/pre>/u)?.[1]
@@ -96,7 +96,6 @@ test('builds a dynamic escaped card with only the GitHub icon and repository foo
   assert.match(html, /<svg class="github-icon"/u)
   assert.match(html, new RegExp(REPOSITORY_LABEL.replaceAll('/', '\\/'), 'u'))
   assert.doesNotMatch(html, /Powered\s+by/iu)
-  assert.doesNotMatch(html, /https:\/\/github\.com\/help660vip/u)
   assert.doesNotMatch(html, /<h1/u)
 
   const clampedHtml = buildRenderHtml('正文', { minWidth: 1, maxWidth: 1 })

@@ -3,6 +3,7 @@
 - 命令实现文件：`apps/railway-tools.js`
 - 触发格式：Yunzai 消息事件中的 `#命令 参数`，支持连续空白和英文字母大小写容错。
 - 实际输出、状态及截图验收结果由 `test-runner.js` 写入 [report.md](report.md)。
+- 截图运行时优先使用 TRSS-Yunzai 共享 Puppeteer；不可用时使用测试专用 Chrome Headless 加载系统临时 HTML，通过 CDP 生成真实 PNG。
 
 | 命令 | 成功结果 | 空结果或错误 | 测试参数来源 |
 |---|---|---|---|
@@ -19,6 +20,7 @@
 ## 图片验收
 
 - 五个候选车次 G895、G6005、C7213、D169、T222 必须全部实际请求并分别记录，随后才使用第一个有效详情派生车号、车组、车站和大屏测试。
-- 生成真实 PNG 时，报告记录图片数量、IHDR 尺寸、分页顺序，以及字体、背景和 GitHub 页脚的人工验收入口。
-- 没有 TRSS-Yunzai 共享 Puppeteer 时不创建占位图，图片数量、尺寸、分页、字体、背景和 GitHub 页脚均明确标记 `SKIP`。
+- 生成真实 PNG 时，报告记录图片数量、IHDR 尺寸、分页顺序，以及字体、背景和完整页脚地址 `https://github.com/help660vip/Yunzai-plugin-railwaytools` 的人工验收入口。
+- 只有当前 Node.js 不提供 WebSocket 且没有 TRSS，或未检测到 Chrome/Chromium 时才标记 `SKIP`；检测到 Chrome 但启动或截图失败时标记 `FAIL-IMAGE`。
+- PNG 先写入临时 staging，全部生成并通过 IHDR 尺寸校验后才整体替换 `images/`；失败时保留既有图片产物。
 - `#机车信息` 不进入 Puppeteer 渲染路径；格式化结果必须包含实拍图消息段，并且全部普通文字不得包含 URL。
