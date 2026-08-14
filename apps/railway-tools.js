@@ -20,6 +20,7 @@ import {
   queryTrainAssignments,
   queryTrainDetails
 } from '../model/services.js'
+import { renderTextImage } from '../model/render-text-image.js'
 import { extractCommandArgument, looksLikeTrainCode } from '../model/utils.js'
 
 const WS = '[\\s\\u200B-\\u200D\\u2060\\uFEFF]'
@@ -69,7 +70,7 @@ export class RailwayTools extends plugin {
   }
 
   async showHelp() {
-    await this.reply(HELP_TEXT)
+    await this.replyRenderedText(HELP_TEXT)
     return true
   }
 
@@ -77,7 +78,7 @@ export class RailwayTools extends plugin {
     return extractCommandArgument(this.e?.msg, aliases)
   }
 
-  async execute(aliases, prompt, query, formatter) {
+  async execute(aliases, prompt, query, formatter, options = {}) {
     const argument = this.getArgument(aliases)
     if (!argument) {
       await this.reply(prompt)
@@ -86,12 +87,28 @@ export class RailwayTools extends plugin {
 
     try {
       const result = await query(argument)
-      await this.reply(this.toYunzaiMessage(formatter(result)))
+      const formatted = formatter(result)
+      const shouldRender = options.render !== false && options.shouldRender?.(result) === true
+      if (shouldRender && typeof formatted === 'string') {
+        await this.replyRenderedText(formatted)
+      } else {
+        await this.reply(this.toYunzaiMessage(formatted))
+      }
     } catch (error) {
       this.logError(error)
       await this.reply(getPublicErrorMessage(error))
     }
     return true
+  }
+
+  async replyRenderedText(text) {
+    try {
+      const images = await renderTextImage(this.e, text)
+      await this.reply(images)
+    } catch (error) {
+      this.logError(error)
+      await this.reply(text)
+    }
   }
 
   toYunzaiMessage(message) {
@@ -100,7 +117,7 @@ export class RailwayTools extends plugin {
       if (typeof part === 'string') return part
       if (part?.type !== 'image' || !part.url) return ''
       const image = globalThis.segment?.image
-      return typeof image === 'function' ? image(part.url) : `图片：${part.url}\n`
+      return typeof image === 'function' ? image(part.url) : ''
     }).filter(Boolean)
   }
 
@@ -114,7 +131,8 @@ export class RailwayTools extends plugin {
       COMMANDS.emuNumber,
       '请输入动车组车次，例如：#车号 G123',
       queryEmuAssignments,
-      formatEmuAssignments
+      formatEmuAssignments,
+      { shouldRender: (result) => result.records.length > 0 }
     )
   }
 
@@ -126,9 +144,21 @@ export class RailwayTools extends plugin {
     }
 
     if (looksLikeTrainCode(argument)) {
-      return this.execute(COMMANDS.trainNumber, '', queryTrainDetails, formatTrainDetails)
+      return this.execute(
+        COMMANDS.trainNumber,
+        '',
+        queryTrainDetails,
+        formatTrainDetails,
+        { shouldRender: (result) => result.stops.length > 0 }
+      )
     }
-    return this.execute(COMMANDS.trainNumber, '', queryTrainAssignments, formatTrainAssignments)
+    return this.execute(
+      COMMANDS.trainNumber,
+      '',
+      queryTrainAssignments,
+      formatTrainAssignments,
+      { shouldRender: (result) => result.records.length > 0 }
+    )
   }
 
   async handleTrainInfo() {
@@ -136,7 +166,8 @@ export class RailwayTools extends plugin {
       COMMANDS.trainInfo,
       '请输入列车车次，例如：#查询 G123',
       queryTrainDetails,
-      formatTrainDetails
+      formatTrainDetails,
+      { shouldRender: (result) => result.stops.length > 0 }
     )
   }
 
@@ -145,7 +176,8 @@ export class RailwayTools extends plugin {
       COMMANDS.stationScreen,
       '请输入车站名称，例如：#大屏 上海',
       queryStationScreen,
-      formatStationScreen
+      formatStationScreen,
+      { shouldRender: (result) => result.trains.length > 0 }
     )
   }
 
@@ -154,7 +186,8 @@ export class RailwayTools extends plugin {
       COMMANDS.route,
       '请输入线路名称，例如：#线路 京沪高铁',
       queryRoute,
-      formatRoute
+      formatRoute,
+      { shouldRender: () => true }
     )
   }
 
@@ -163,7 +196,8 @@ export class RailwayTools extends plugin {
       COMMANDS.station,
       '请输入车站名称，例如：#车站 上海',
       queryStation,
-      formatStation
+      formatStation,
+      { shouldRender: () => true }
     )
   }
 
@@ -172,7 +206,8 @@ export class RailwayTools extends plugin {
       COMMANDS.locomotive,
       '请输入机车或动车组车号，例如：#机车信息 HXD1D-1898',
       queryLocomotive,
-      formatLocomotive
+      formatLocomotive,
+      { render: false }
     )
   }
 }

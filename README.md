@@ -17,6 +17,10 @@
 - Yunzai-Bot V3 或兼容其插件接口的实现
 - Node.js 18.18 或更高版本
 
+查询成功后的多行详情默认渲染为图片。插件直接复用 TRSS-Yunzai 的共享 Puppeteer，不需要安装额外截图依赖；Puppeteer 不可用或渲染失败时会自动返回原始文字。
+
+Linux 服务器建议安装中文字体。渲染字体按 `Microsoft YaHei`、`Microsoft YaHei UI`、`PingFang SC`、`WenQuanYi Micro Hei`、`Noto Sans CJK SC`、`sans-serif` 的顺序回退。
+
 ## 安装方法
 
 在 Yunzai-Bot 根目录执行：
@@ -59,6 +63,8 @@ git -C plugins/Yunzai-plugin-railwaytools pull
 | `#车站 [地铁站名]地铁站` | 查询地铁车站基本信息 | `#车站 人民广场地铁站` |
 | `#机车信息 [车号]` | 查询机车或动车组档案 | `#机车信息 HXD1D-1898` |
 | `#车迷帮助` | 显示插件帮助菜单 | `#车迷帮助` |
+
+`#机车信息` 保留档案实拍图和普通文字详情，不进行 Puppeteer 图片渲染，也不会在群消息中发送档案数据项目地址。
 
 插件还保留了常用的 `#ch`、`#cc`、`#cx`、`#dp`、`#xl`、`#cz` 和 `#jcxx` 简写命令。
 

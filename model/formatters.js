@@ -145,9 +145,7 @@ export function formatLocomotive(data) {
       DIVIDER
     ].filter(Boolean).join('\n') + '\n')
   })
-  parts.push(
-    `数据来源：${DATA_SOURCES.allocation}\n项目地址：https://github.com/leaf2006/CR-Locomotive-Allocation`
-  )
+  parts.push(`数据来源：${DATA_SOURCES.allocation}`)
   return parts
 }
 

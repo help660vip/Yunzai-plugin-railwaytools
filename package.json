@@ -1,13 +1,14 @@
 {
   "name": "yunzai-plugin-railwaytools",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "面向 Yunzai-Bot 的铁路信息查询插件",
   "type": "module",
   "main": "index.js",
   "exports": "./index.js",
   "scripts": {
-    "check": "node --check index.js && node --check apps/railway-tools.js && node --check model/api.js && node --check model/constants.js && node --check model/formatters.js && node --check model/services.js && node --check model/utils.js",
-    "test": "node --test"
+    "check": "node --check index.js && node --check apps/railway-tools.js && node --check model/api.js && node --check model/constants.js && node --check model/formatters.js && node --check model/render-text-image.js && node --check model/services.js && node --check model/utils.js && node --check command-render-tests/test-runner.js && node --check test/input.test.js && node --check test/plugin-load.test.js && node --check test/render-routing.test.js && node --check test/render-text-image.test.js",
+    "test": "node --test test/input.test.js test/plugin-load.test.js test/render-routing.test.js test/render-text-image.test.js",
+    "test:render": "node command-render-tests/test-runner.js"
   },
   "engines": {
     "node": ">=18.18"

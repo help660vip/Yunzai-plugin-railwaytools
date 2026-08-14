@@ -66,6 +66,13 @@ function trainDetailResponse() {
 }
 
 test('loads through the Yunzai entry and routes required commands', async (context) => {
+  const previousLogger = globalThis.logger
+  globalThis.logger = { error() {} }
+  context.after(() => {
+    if (previousLogger === undefined) delete globalThis.logger
+    else globalThis.logger = previousLogger
+  })
+
   const { root, pluginRoot } = await createYunzaiFixture()
   context.after(() => rm(root, { recursive: true, force: true }))
 
