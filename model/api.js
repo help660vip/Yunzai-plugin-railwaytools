@@ -1,5 +1,5 @@
 import { API_ENDPOINTS, HTTP_TIMEOUT_MS } from './constants.js'
-import { decryptCnrailData, normalizeIdentifier } from './utils.js'
+import { decryptCnrailData } from './utils.js'
 
 const DEFAULT_HEADERS = Object.freeze({
   Accept: 'application/json, text/plain, */*',
@@ -98,33 +98,4 @@ export async function fetchCnrailStation(stationId) {
     throw new RailwayApiError('车站接口返回了无法解析的数据', { code: 'INVALID_RESPONSE' })
   }
   return data
-}
-
-async function refreshAllocationIndex() {
-  const raw = await fetchJson(API_ENDPOINTS.locomotiveAllocation, { timeout: 30_000 })
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
-    throw new RailwayApiError('机车名录数据结构无效', { code: 'INVALID_RESPONSE' })
-  }
-
-  const index = new Map()
-  for (const trains of Object.values(raw)) {
-    if (!Array.isArray(trains)) continue
-    for (const train of trains) {
-      if (!train || typeof train !== 'object' || !train.id) continue
-      const id = normalizeIdentifier(train.id)
-      const matches = index.get(id) ?? []
-      matches.push(train)
-      index.set(id, matches)
-    }
-  }
-
-  if (index.size === 0) {
-    throw new RailwayApiError('机车名录没有可用数据', { code: 'INVALID_RESPONSE' })
-  }
-
-  return index
-}
-
-export async function getLocomotiveAllocationIndex() {
-  return refreshAllocationIndex()
 }

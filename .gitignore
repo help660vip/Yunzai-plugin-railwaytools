@@ -4,6 +4,9 @@ node_modules/
 # Test and coverage output
 coverage/
 .nyc_output/
+command-render-tests/.images-staging-*/
+command-render-tests/.images-backup-*/
+.visual-review/
 
 # Logs and runtime files
 *.log

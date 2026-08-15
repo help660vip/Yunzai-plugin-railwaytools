@@ -1,13 +1,13 @@
 {
   "name": "yunzai-plugin-railwaytools",
-  "version": "1.2.0",
-  "description": "面向 Yunzai-Bot 的铁路信息查询插件",
+  "version": "2.1.1",
+  "description": "适用于 Yunzai-Bot 的铁路与 12306 车票查询插件",
   "type": "module",
   "main": "index.js",
   "exports": "./index.js",
   "scripts": {
-    "check": "node --check index.js && node --check apps/railway-tools.js && node --check model/api.js && node --check model/assistant-formatters.js && node --check model/assistant-services.js && node --check model/cache.js && node --check model/cached-api.js && node --check model/constants.js && node --check model/encyclopedia.js && node --check model/encyclopedia-provider.js && node --check model/formatters.js && node --check model/random-train-data.js && node --check model/random-train.js && node --check model/realtime-provider.js && node --check model/render-text-image.js && node --check model/services.js && node --check model/utils.js && node --check command-render-tests/chrome-renderer.js && node --check command-render-tests/test-runner.js && node --check test/assistant-features.test.js && node --check test/cache.test.js && node --check test/input.test.js && node --check test/plugin-load.test.js && node --check test/render-routing.test.js && node --check test/render-text-image.test.js",
-    "test": "node --test test/assistant-features.test.js test/cache.test.js test/input.test.js test/plugin-load.test.js test/render-routing.test.js test/render-text-image.test.js",
+    "check": "node --check index.js && node --check apps/railway-tools.js && node --check model/api.js && node --check model/assistant-formatters.js && node --check model/assistant-services.js && node --check model/cache.js && node --check model/cached-api.js && node --check model/constants.js && node --check model/formatters.js && node --check model/help-menu.js && node --check model/realtime-provider.js && node --check model/render-menu-image.js && node --check model/render-text-image.js && node --check model/services.js && node --check model/ticket-api.js && node --check model/ticket-cached-api.js && node --check model/ticket-formatters.js && node --check model/ticket-parser.js && node --check model/ticket-service.js && node --check model/ticket-sessions.js && node --check model/utils.js && node --check command-render-tests/chrome-renderer.js && node --check command-render-tests/test-runner.js && node --check test/assistant-features.test.js && node --check test/cache.test.js && node --check test/input.test.js && node --check test/menu-render.test.js && node --check test/plugin-load.test.js && node --check test/render-routing.test.js && node --check test/render-text-image.test.js && node --check test/ticket-parser.test.js && node --check test/ticket-service.test.js && node --check test/ticket-sessions.test.js",
+    "test": "node --test test/assistant-features.test.js test/cache.test.js test/input.test.js test/menu-render.test.js test/plugin-load.test.js test/render-routing.test.js test/render-text-image.test.js test/ticket-parser.test.js test/ticket-service.test.js test/ticket-sessions.test.js",
     "test:render": "node command-render-tests/test-runner.js"
   },
   "engines": {
@@ -26,6 +26,8 @@
     "bot-plugin",
     "railway",
     "train",
+    "12306",
+    "train-ticket",
     "railway-tools"
   ]
 }

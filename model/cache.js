@@ -5,7 +5,9 @@ export const CACHE_POLICIES = Object.freeze({
   cnrailSearch: Object.freeze({ ttlMs: 6 * 60 * 60_000, staleTtlMs: 2 * 24 * 60 * 60_000 }),
   route: Object.freeze({ ttlMs: 24 * 60 * 60_000, staleTtlMs: 7 * 24 * 60 * 60_000 }),
   station: Object.freeze({ ttlMs: 24 * 60 * 60_000, staleTtlMs: 7 * 24 * 60 * 60_000 }),
-  locomotiveAllocation: Object.freeze({ ttlMs: 6 * 60 * 60_000, staleTtlMs: 24 * 60 * 60_000 })
+  ticketStations: Object.freeze({ ttlMs: 24 * 60 * 60_000, staleTtlMs: 7 * 24 * 60 * 60_000 }),
+  ticketAvailability: Object.freeze({ ttlMs: 15_000, staleTtlMs: 30_000 }),
+  ticketPrice: Object.freeze({ ttlMs: 15 * 60_000, staleTtlMs: 60 * 60_000 })
 })
 
 export class RailwayCacheDataError extends Error {

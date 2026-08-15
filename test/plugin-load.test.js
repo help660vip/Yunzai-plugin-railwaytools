@@ -14,7 +14,7 @@ async function createYunzaiFixture() {
   await mkdir(pluginRoot, { recursive: true })
   await mkdir(baseDir, { recursive: true })
 
-  for (const entry of ['apps', 'data', 'model', 'index.js', 'package.json']) {
+  for (const entry of ['apps', 'model', 'index.js', 'package.json']) {
     await cp(path.join(projectRoot, entry), path.join(pluginRoot, entry), { recursive: true })
   }
 
@@ -90,8 +90,15 @@ test('loads through the Yunzai entry and routes required commands', async (conte
   assert.equal(matches('#车次    G123 ').length, 1)
   assert.equal(matches('#车迷帮助').length, 1)
   assert.equal(matches('#实时 g123').length, 1)
-  assert.equal(matches('#铁路百科 CR400AF').length, 1)
-  assert.equal(matches('#随机列车').length, 1)
+  assert.equal(matches('#查询车票 北京南 上海虹桥 明天').length, 1)
+  assert.equal(matches('#定时查询车票 湖州 厦门北 14-16 10分钟').length, 1)
+  assert.equal(matches('#取消查询车票').length, 1)
+  assert.equal(matches('#车票帮助').length, 1)
+  assert.equal(matches('#下一页').length, 1)
+  assert.equal(matches('next').length, 1)
+  assert.equal(matches('#机车信息 HXD1D-1898').length, 0)
+  assert.equal(matches('#铁路百科 CR400AF').length, 0)
+  assert.equal(matches('#随机列车').length, 0)
   assert.equal(matches('/' + '车次 G123').length, 0)
   assert.equal(matches('/' + 'help').length, 0)
 
@@ -130,15 +137,13 @@ test('loads through the Yunzai entry and routes required commands', async (conte
   assert.match(helpReplies[0], /【车迷工具箱】/u)
   assert.match(helpReplies[0], /#车次 G123/u)
   assert.match(helpReplies[0], /#实时 G123/u)
-  assert.match(helpReplies[0], /#铁路百科 CR400AF/u)
-  assert.match(helpReplies[0], /#随机列车/u)
+  assert.match(helpReplies[0], /#查询车票 北京南 上海虹桥 明天/u)
+  assert.match(helpReplies[0], /#下一页 \/ next/u)
 
-  const encyclopediaReplies = []
-  const encyclopedia = new entry.RailwayTools()
-  encyclopedia.e = {
-    msg: '#铁路百科 cr400af',
-    reply: async (reply) => encyclopediaReplies.push(reply)
-  }
-  assert.equal(await encyclopedia.handleEncyclopedia(), true)
-  assert.match(encyclopediaReplies[0], /【铁路百科】复兴号 CR400AF 型动车组/u)
+  const ticketHelpReplies = []
+  const ticketHelp = new entry.RailwayTools()
+  ticketHelp.e = { msg: '#车票帮助', reply: async (reply) => ticketHelpReplies.push(reply) }
+  assert.equal(await ticketHelp.showTicketHelp(), true)
+  assert.match(ticketHelpReplies[0], /【车票查询帮助】/u)
+  assert.match(ticketHelpReplies[0], /-精确站名/u)
 })

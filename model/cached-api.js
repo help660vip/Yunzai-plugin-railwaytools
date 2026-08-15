@@ -5,7 +5,6 @@ import {
   fetchRailReTrain as fetchRailReTrainUpstream,
   fetchStationScreen as fetchStationScreenUpstream,
   fetchTrainDetail as fetchTrainDetailUpstream,
-  getLocomotiveAllocationIndex as getLocomotiveAllocationIndexUpstream,
   RailwayApiError,
   searchCnrail as searchCnrailUpstream
 } from './api.js'
@@ -76,14 +75,5 @@ export function fetchCnrailStation(stationId) {
     stationId,
     () => fetchCnrailStationUpstream(stationId),
     { validate: isObject }
-  )
-}
-
-export function getLocomotiveAllocationIndex() {
-  return cacheRailwayData(
-    'locomotiveAllocation',
-    'index',
-    getLocomotiveAllocationIndexUpstream,
-    { validate: (value) => value instanceof Map && value.size > 0 }
   )
 }

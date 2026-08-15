@@ -5,7 +5,6 @@ import {
   fetchRailReTrain,
   fetchStationScreen,
   fetchTrainDetail,
-  getLocomotiveAllocationIndex,
   RailwayApiError,
   searchCnrail
 } from './cached-api.js'
@@ -363,21 +362,6 @@ export async function queryStation(stationNameInput) {
   }
 }
 
-export async function queryLocomotive(trainIdInput) {
-  const trainId = requireIdentifier(trainIdInput, '机车或动车组车号（如 CRH2A-2001）')
-  const index = await getLocomotiveAllocationIndex()
-  const records = (index.get(trainId) ?? []).map((item) => ({
-    id: asNonEmptyString(item.id, trainId),
-    allocation: asNonEmptyString(item.allocation),
-    manufacturer: asNonEmptyString(item.manufacturer),
-    photoAuthor: asNonEmptyString(item.photo_author, ''),
-    photoDate: asNonEmptyString(item.photo_date, ''),
-    photoUrl: asNonEmptyString(item.photo_url, '')
-  }))
-
-  return { trainId, records }
-}
-
 export function getPublicErrorMessage(error) {
   if (error instanceof RailwayServiceError) return error.message
   if (error instanceof RailwayApiError) {
@@ -386,6 +370,7 @@ export function getPublicErrorMessage(error) {
     return '铁路数据服务暂时不可用，请稍后再试'
   }
   if (error?.code === 'INVALID_CACHE_DATA') return '铁路数据服务返回异常，请稍后再试'
+  if (error?.name === 'TicketInputError') return error.message
   if (error?.code === 'PROVIDER_UNAVAILABLE') return '列车实时状态数据源暂时不可用，请稍后再试'
   return '查询时发生异常，请稍后再试'
 }

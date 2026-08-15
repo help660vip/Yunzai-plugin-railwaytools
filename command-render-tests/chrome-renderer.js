@@ -361,6 +361,31 @@ class ChromeRenderer {
     return buffers
   }
 
+  async renderHtml(html, options = {}) {
+    const settings = resolveRenderOptions(options)
+    await this.page.setViewport({
+      width: Math.max(900, settings.maxWidth + 48),
+      height: 1200,
+      deviceScaleFactor: 1,
+    })
+    await this.page.setContent(html, { timeout: settings.setContentTimeoutMs })
+    if (settings.fontTimeoutMs > 0) {
+      await this.page.evaluate(async (timeoutMs) => {
+        if (!document.fonts?.ready) return
+        await Promise.race([
+          document.fonts.ready,
+          new Promise((resolve) => setTimeout(resolve, timeoutMs)),
+        ])
+      }, settings.fontTimeoutMs)
+    }
+    await waitForBackground(this.page, settings.backgroundTimeoutMs)
+    const bounds = await this.page.containerBounds()
+    if (bounds.width < 360 || bounds.width > 720 || bounds.height > settings.maxPageHeight) {
+      throw new RangeError(`Chrome structured image exceeds limits: ${bounds.width}x${bounds.height}`)
+    }
+    return [await this.page.captureContainer()]
+  }
+
   async close() {
     let closeError = null
     try {

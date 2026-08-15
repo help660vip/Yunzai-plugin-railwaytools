@@ -1,18 +1,34 @@
 # Yunzai-plugin-railwaytools
 
-RailwayTools 是面向 Yunzai-Bot 的铁路查询插件，适合部署在 QQ 群中使用。插件将列车时刻、车组担当、车站与线路资料、机车档案和铁路百科集中到一套命令中，并对群聊中常见的大小写、连续空格和复制粘贴空白作了兼容处理。
+[![CI](https://github.com/help660vip/Yunzai-plugin-railwaytools/actions/workflows/ci.yml/badge.svg)](https://github.com/help660vip/Yunzai-plugin-railwaytools/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/help660vip/Yunzai-plugin-railwaytools?display_name=tag)](https://github.com/help660vip/Yunzai-plugin-railwaytools/releases)
+[![License](https://img.shields.io/github/license/help660vip/Yunzai-plugin-railwaytools)](LICENSE)
 
-查询成功后的详细内容会优先生成图片；截图环境不可用时，机器人仍会返回同一份文字结果。
+[项目简介](#项目简介) · [快速开始](#快速开始) · [命令速查](#命令速查) · [功能截图](#功能截图) · [运行方式](#运行方式) · [常见问题](#常见问题) · [许可](#数据来源与许可)
+
+## 项目简介
+
+RailwayTools 是面向 QQ 群的 Yunzai-Bot 铁路助手。它把车迷常用的列车、车组、车站、线路查询与 12306 余票能力放进同一套 `#` 命令中；详细结果优先生成图片，渲染不可用时自动返回原文字。
+
+| 想解决的问题 | 插件直接提供 |
+| --- | --- |
+| 车次信息分散，来回切换多个页面 | 车型、担当、配属、停站时刻和运行状态一次返回 |
+| 群友输入不规范，命令容易失效 | 大小写、连续空格、Tab、全角 `#` 和复制空白自动兼容 |
+| 12306 结果多，查票与蹲票步骤重复 | 余票、票价、10 趟分页、精确站名和定时检查 |
+| 群消息太长，文字难以阅读 | 统一图片排版；失败时只回退一次完整文字 |
+
+### 一套命令，三个使用场景
+
+| 查列车 | 查站线 | 查车票 |
+| --- | --- | --- |
+| 车次详情、动车组担当、实时状态 | 车站大屏、车站资料、线路与沿途站 | 余票票价、下一页、定时查询与取消 |
+| `#车次 G2755` | `#大屏 上海` | `#查询车票 北京南 上海虹桥 明天` |
+
+![车迷工具箱总菜单](command-render-tests/images/main-help-default-1.png)
 
 ## 快速开始
 
-### 运行环境
-
-- Linux 服务器
-- Yunzai-Bot V3 或兼容其插件接口的实现
-- Node.js 18.18 及以上版本
-
-### 安装
+要求：Linux、Node.js 18.18 及以上、Yunzai-Bot V3 或兼容实现。
 
 在 Yunzai-Bot 根目录执行：
 
@@ -20,120 +36,209 @@ RailwayTools 是面向 Yunzai-Bot 的铁路查询插件，适合部署在 QQ 群
 git clone https://github.com/help660vip/Yunzai-plugin-railwaytools.git plugins/Yunzai-plugin-railwaytools
 ~~~
 
-插件没有额外的运行时 npm 依赖。克隆完成后重启 Yunzai-Bot，发送 `#车迷帮助` 即可确认插件是否加载成功。
+插件没有额外 npm 运行时依赖。重启 Yunzai-Bot，发送 `#车迷帮助`；收到上方菜单即表示加载成功。
 
-更新插件：
+更新时执行：
 
 ~~~bash
 git -C plugins/Yunzai-plugin-railwaytools pull
 ~~~
 
-## 功能
+## 命令速查
 
-### 列车与车组
-
-按车次查询运行区间、担当单位、车型、配属和完整停站时刻，也可以查看近期车组担当记录。输入动车组编号时，`#车次` 会自动切换为担当车次反查。
-
-实时状态查询复用现有车次数据，给出当前运行状态、参考站点和正晚点信息。该结果用于日常查询参考，不代替铁路运营方发布的信息。
-
-### 车站与线路
-
-车站查询覆盖国铁车站和部分地铁站资料；车站大屏显示近期列车、候车位置和状态。线路查询提供线路类型、设计速度及沿途车站。
-
-### 铁路资料
-
-铁路百科收录常见动车组、机车型号、线路和车站。未收入本地词库的线路与车站会尝试从现有铁路数据源补全。随机列车功能从真实候选车次中选取结果，并附带相关铁路知识。
-
-## 效果预览
-
-| 实时状态 | 铁路百科 |
-| --- | --- |
-| ![列车实时状态](command-render-tests/images/realtime-g895-1.png) | ![铁路百科](command-render-tests/images/encyclopedia-cr400af-1.png) |
-
-![随机列车](command-render-tests/images/random-train-default-1.png)
-
-## 命令
-
-| 功能 | 命令 | 示例 |
+| 场景 | 命令 | 说明 |
 | --- | --- | --- |
-| 列车详情 | `#车次 [车次]` 或 `#查询 [车次]` | `#车次 G123` |
-| 动车组反查 | `#车次 [动车组编号]` | `#车次 CRH2A-2001` |
-| 实时状态 | `#实时 [车次]` | `#实时 G123` |
-| 详情与实时状态 | `#查询 [车次] -实时` | `#查询 Z225 -实时` |
-| 近期车组担当 | `#车号 [车次]` | `#车号 D3211` |
-| 车站大屏 | `#大屏 [车站名]` | `#大屏 上海` |
-| 线路资料 | `#线路 [线路名]` | `#线路 宣杭铁路` |
-| 国铁车站 | `#车站 [车站名]` | `#车站 上海` |
-| 地铁车站 | `#车站 [站名]地铁站` | `#车站 人民广场地铁站` |
-| 机车档案 | `#机车信息 [车号]` | `#机车信息 HXD1D-1898` |
-| 铁路百科 | `#铁路百科 [关键词]` | `#铁路百科 CR400AF` |
-| 随机列车 | `#随机列车` | `#随机列车` |
-| 帮助菜单 | `#车迷帮助` | `#车迷帮助` |
+| 总菜单 | `#车迷帮助` | 所有铁路与车票入口 |
+| 列车详情 | `#车次 G2755` | 区间、车型、担当、配属与停站 |
+| 动车组反查 | `#车次 CR400AFAE-2402` | 查询近期担当车次 |
+| 车组担当 | `#车号 G2755` | 查询近期担当动车组号 |
+| 列车查询 | `#查询 G2755` | 与车次详情相同；可追加 `-实时` |
+| 实时状态 | `#实时 G2755` | 当前状态、参考站点与正晚点 |
+| 车站大屏 | `#大屏 上海` | 列车、候车位置与状态 |
+| 线路资料 | `#线路 京沪高铁` | 线路信息与沿途车站 |
+| 车站资料 | `#车站 上海` | 国铁站；名称后加“地铁站”可查地铁站 |
+| 车票查询 | `#查询车票 北京南 上海虹桥 明天` | 余票、席别、票价与分页 |
+| 定时查票 | `#定时查询车票 湖州 厦门北 明天 14-16 10分钟` | 指定日期、时段和间隔 |
+| 取消查票 | `#取消查询车票` | 结束当前定时任务 |
+| 继续翻页 | `#下一页` 或 `next` | 每页 10 趟，5 分钟内有效 |
+| 车票帮助 | `#车票帮助` | 日期、精确站名与定时格式 |
 
-命令支持半角或全角 `#`。参数中的英文字母不区分大小写，命令与参数之间可以使用连续空格、Tab 或常见全角空白。因此下面三种写法效果相同：
+简写：`#ch`、`#cc`、`#cx`、`#ss`、`#dp`、`#xl`、`#cz`。英文车次与简写不区分大小写。
+
+<details>
+<summary><strong>展开车票日期、精确站名与定时规则</strong></summary>
+
+### 日期
+
+不填日期或日期早于今天时，按今天查询。支持：
 
 ~~~text
-#车次 G123
-#车次 g123
-#车次    G123
+今天 / 明天
+today / tomorrow
+2026-08-16
+2026年8月16日
 ~~~
 
-兼容简写包括 `#ch`、`#cc`、`#cx`、`#ss`、`#dp`、`#xl`、`#cz`、`#jcxx`、`#bk` 和 `#sjlc`。
+### 精确站名
 
-## 配置与运行
+参数放在命令末尾：
 
-插件没有必填配置文件。服务器需要能够访问所列数据源；网络受限时，相应查询会返回错误提示，不影响其他命令。
+- `-精确站名`：精确匹配发站和到站。
+- `-精确发站`：只精确匹配出发站。
+- `-精确到站`：只精确匹配到达站。
 
-多行结果使用 TRSS-Yunzai 的共享 Puppeteer 生成图片，不需要安装单独的截图包。Puppeteer 缺失、页面超时或截图失败时，结果自动回退为普通文字。Linux 服务器建议安装 `WenQuanYi Micro Hei` 或 `Noto Sans CJK SC` 等中文字体。
+~~~text
+#查询车票 北京 上海 明天 -精确站名
+#定时查询车票 湖州 厦门北 14-16 10分钟 -精确发站
+~~~
 
-查询数据默认缓存在 Yunzai 进程内存中，用于减少重复请求。缓存无需 Redis，也不会写入磁盘；重启 Yunzai 后会自动清空。
+### 定时与翻页
 
-## 注意事项
+时段格式为 `小时-小时`，间隔格式为 `N分钟` 或 `N小时`。机器人先立即查询；当前无票时才创建任务，之后最多再查 9 次。发现余票、达到次数上限或收到 `#取消查询车票` 后停止。
 
-- 实时状态根据列车时刻、开行日期和正晚点字段推算，不表示列车的精确地理位置。
-- 车站大屏、正晚点和开行信息可能存在延迟，乘车时应以 12306、车站公告和工作人员通知为准。
-- `#机车信息` 保留实拍图片段和普通文字详情，不使用 Puppeteer，也不会在群消息中发送档案数据项目地址。
-- 第三方接口调整、限流或临时不可用时，部分查询可能没有结果。
+普通查询每页显示 10 趟列车。发送 `#下一页` 或 `next` 后，会话有效期重新计算为 5 分钟。
+
+</details>
+
+## 功能截图
+
+下列 PNG 均由 `npm run test:render` 使用真实接口数据和 Chrome Headless 生成。完整尺寸和执行结果见 [命令验证报告](command-render-tests/report.md)。
+
+<details open>
+<summary><strong>帮助菜单</strong></summary>
+
+| 车迷帮助 | 车票帮助 |
+| --- | --- |
+| ![#车迷帮助](command-render-tests/images/main-help-default-1.png) | ![#车票帮助](command-render-tests/images/ticket-help-default-1.png) |
+
+</details>
+
+<details>
+<summary><strong>列车与车组：5 项</strong></summary>
+
+| 车次详情 | 动车组反查 |
+| --- | --- |
+| ![#车次 G2755](command-render-tests/images/train-number-g2755-1.png) | ![动车组反查](command-render-tests/images/train-number-emu-reverse-1.png) |
+
+| 车组担当 | 列车查询 |
+| --- | --- |
+| ![#车号 G2755](command-render-tests/images/emu-number-g2755-1.png) | ![#查询 G2755](command-render-tests/images/train-query-g2755-1.png) |
+
+| 实时状态 |
+| --- |
+| ![#实时 G2755](command-render-tests/images/realtime-g2755-1.png) |
+
+</details>
+
+<details>
+<summary><strong>车站与线路：3 项</strong></summary>
+
+| 车站大屏 | 线路资料 |
+| --- | --- |
+| ![#大屏 上海](command-render-tests/images/station-screen-shanghai-1.png) | ![#线路 京沪高铁](command-render-tests/images/route-jinghu-hsr-1.png) |
+
+| 车站资料 |
+| --- |
+| ![#车站 上海](command-render-tests/images/station-shanghai-1.png) |
+
+</details>
+
+<details>
+<summary><strong>12306 车票：4 项</strong></summary>
+
+| 车票首页 | 下一页 |
+| --- | --- |
+| ![#查询车票](command-render-tests/images/ticket-query-beijingnan-shanghaihongqiao-1.png) | ![#下一页](command-render-tests/images/ticket-next-page-beijingnan-shanghaihongqiao-page2-1.png) |
+
+| 定时查询 | 取消查询 |
+| --- | --- |
+| ![#定时查询车票](command-render-tests/images/ticket-scheduled-beijingnan-shanghaihongqiao-1.png) | ![#取消查询车票](command-render-tests/images/ticket-cancel-default-1.png) |
+
+</details>
+
+## 运行方式
+
+### 图片
+
+正式运行只复用 TRSS-Yunzai 共享 Puppeteer，不安装额外截图包。Linux 建议提供 `WenQuanYi Micro Hei` 或 `Noto Sans CJK SC` 中文字体。Puppeteer 缺失、超时或截图失败时，插件只回复一次原始文字。
+
+### 缓存
+
+默认缓存位于 Yunzai 进程内存，不要求 Redis、不写磁盘，重启后自动清空。余票使用秒级缓存，票价使用分钟级缓存，站名、车站和线路使用小时到天级缓存；同一键的并发请求会合并。
+
+<details>
+<summary><strong>查看具体缓存时间</strong></summary>
+
+| 数据 | 新鲜缓存 | 数据源异常时的短期回退 |
+| --- | ---: | ---: |
+| 车站大屏 | 20 秒 | 1 分钟 |
+| 12306 余票 | 15 秒 | 30 秒 |
+| 列车时刻与状态 | 1 分钟 | 4 分钟 |
+| 动车组担当 | 5 分钟 | 30 分钟 |
+| 12306 票价 | 15 分钟 | 1 小时 |
+| 车站名称与电报码 | 24 小时 | 7 天 |
+| 线路与车站详情 | 24 小时 | 7 天 |
+
+</details>
+
+插件没有必填配置文件。服务器需能访问 12306、rail.re、车站大屏和 cnrail；单个数据源异常不会影响其他命令。
+
+## 目录结构
+
+~~~text
+Yunzai-plugin-railwaytools/
+├─ apps/                    Yunzai 规则与命令处理
+├─ model/                   API、缓存、业务、会话与渲染
+├─ test/                    node:test 单元与加载测试
+├─ command-render-tests/    真实接口检查与功能截图
+├─ docs/                    维护者文档
+├─ .github/workflows/       Linux CI
+├─ index.js                 插件入口
+├─ package.json             Node.js 元数据与命令
+├─ NOTICE.md                来源与版权声明
+├─ CHANGELOG.md             版本变化
+└─ LICENSE                  GPL-3.0 许可证
+~~~
+
+实现边界、缓存接口和截图验证方式见 [维护说明](docs/maintenance.md)。
 
 ## 常见问题
 
-### 查询结果为什么是文字而不是图片？
+<details>
+<summary><strong>安装后没有响应</strong></summary>
 
-当前 Yunzai 实例没有可用的共享 Puppeteer，或者本次截图失败。文字内容与图片中的查询内容一致，可以正常使用。
+确认插件位于 `plugins/Yunzai-plugin-railwaytools`，Node.js 版本满足要求，并在安装或更新后完整重启 Yunzai-Bot。检查启动日志中的插件加载错误。
 
-### 为什么同一车次有时查不到？
+</details>
 
-列车可能在当前日期附近没有开行数据，也可能是上游接口暂时无记录。确认车次无误后，可稍后重试。
+<details>
+<summary><strong>为什么返回文字而不是图片</strong></summary>
 
-### 如何清空缓存？
+当前实例没有共享 Puppeteer，或本次截图超时。文字业务内容与图片一致，查询仍然有效。
 
-重启 Yunzai-Bot 即可清空默认内存缓存。正常使用时无需手动清理，过期数据会自动刷新。
+</details>
 
-### 安装后没有响应怎么办？
+<details>
+<summary><strong>为什么车票站名查询失败</strong></summary>
 
-确认插件位于 `plugins/Yunzai-plugin-railwaytools`，Node.js 版本满足要求，并在安装后完整重启 Yunzai-Bot。随后检查启动日志中是否出现插件加载或网络请求错误。
+使用 12306 收录的完整站名，例如“北京南”“上海虹桥”。需要限制列车实际发站或到站时，在命令末尾加入精确参数。
 
-## 数据来源
+</details>
 
-- 列车信息与时刻：12306
-- 动车组担当记录：rail.re
-- 车站大屏：12036.com 第三方接口
-- 车站与线路资料：cnrail.geogv.org
-- 机车与动车组档案：[CR-Locomotive-Allocation](https://github.com/leaf2006/CR-Locomotive-Allocation)
-- 铁路百科：中国中车、国家铁路局、中国铁路公开资料及 Wikidata 结构化数据
+<details>
+<summary><strong>为什么定时任务没有创建</strong></summary>
 
-数据源名称仅用于说明查询结果的来源。各数据服务及资料的权利和使用条件归其各自所有者。
+定时命令会先立即查询。如果已有可售余票，机器人直接返回结果，不再轮询。每位用户在同一会话中只保留一个任务。
 
-## 开发与维护
+</details>
 
-缓存策略、实时状态 Provider、百科数据同步和测试方法见 [维护说明](docs/maintenance.md)。版本变化记录见 [CHANGELOG.md](CHANGELOG.md)。
+## 数据来源与许可
 
-## 来源与致谢
+列车时刻、运行字段、车站电报码、余票与票价来自 12306；动车组担当来自 rail.re；车站大屏来自 12036.com 第三方接口；车站与线路资料来自 cnrail.geogv.org。数据源名称仅用于说明结果来源，各服务的权利和使用条件归其所有者。
 
-本项目包含 [leaf2006/nonebot-plugin-railwaytools](https://github.com/leaf2006/nonebot-plugin-railwaytools) 中以 MIT 许可证发布的代码。原始版权和许可信息见 [NOTICE.md](NOTICE.md)。
+项目保留以下来源的版权和许可声明：
 
-感谢铁路数据服务和开源项目的维护者提供公开资料与接口。
+- [leaf2006/nonebot-plugin-railwaytools](https://github.com/leaf2006/nonebot-plugin-railwaytools)
+- [leaf2006/nonebot-plugin-12306-ticket](https://github.com/leaf2006/nonebot-plugin-12306-ticket)
 
-## License
-
-本项目以 [GNU General Public License v3.0](LICENSE) 发布。原项目相关代码的 MIT 许可声明保留于 [NOTICE.md](NOTICE.md)。
+详细声明见 [NOTICE.md](NOTICE.md)。项目以 [GNU General Public License v3.0](LICENSE) 发布。
